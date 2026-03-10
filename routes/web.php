@@ -31,6 +31,16 @@ Route::get('/', function () {
 Route::get('/landing', function () {
     return Inertia::render('Landing');
 });
+Route::get('/location', function () {
+    return Inertia::render('Location');
+});
+Route::get('/map', function () {
+    return Inertia::render('Map');
+});
+
+Route::get('/trip', function () {
+    return Inertia::render('Trip');
+});
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

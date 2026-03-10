@@ -2,8 +2,12 @@
 
     import PrimaryButton from '@/Components/PrimaryButton.vue';
 
-    import { Head} from '@inertiajs/vue3';
+    import { Head, router} from '@inertiajs/vue3';
     import AuthLayout from '@/Layouts/AuthLayout.vue';
+
+    const HandleFindARide = () => {
+        router.visit('/location');
+    }
 
 </script>
 
@@ -16,7 +20,7 @@
                 <PrimaryButton class="ms-4" href="/login">
                     Start Driving
                 </PrimaryButton>
-                <PrimaryButton class="ms-4" href="/login">
+                <PrimaryButton @click="HandleFindARide" class="ms-4" href="/login">
                     Find a Ride
                 </PrimaryButton>
             </div>
