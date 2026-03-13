@@ -9,6 +9,8 @@ import AuthLayout from '@/Layouts/AuthLayout.vue';
 import { useLocationStore } from '@/stores/location';
 import { onMounted, ref } from 'vue';
 
+import http from '@/helpers/http';
+
 const location = useLocationStore();
 
 const gMap = ref(null);

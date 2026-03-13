@@ -42,6 +42,18 @@ Route::get('/trip', function () {
     return Inertia::render('Trip');
 });
 
+Route::get('/driver', function () {
+    return Inertia::render('Driver');
+});
+
+Route::get('/standby', function () {
+    return Inertia::render('Standby');
+});
+
+Route::get('/driving', function () {
+    return Inertia::render('Driving');
+});
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
