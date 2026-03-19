@@ -10,7 +10,7 @@ import { router } from '@inertiajs/vue3'
 //onMounted es hook de Vue que corre después de montar el componente en DOM, es decir, después de que el componente se renderiza por primera vez.
 onMounted(() => {
     if (!localStorage.getItem('token')) {//valida que el token no exista en localStorage, lo que indicaría que el usuario no ha iniciado sesión o su sesión ha expirado.
-        router.visit('/login');
+        router.visit('/');
     }
 });
 
@@ -23,11 +23,12 @@ const checkTokenAuthenticity = () => {
     })
     .then(response => {
         // Si la respuesta es exitosa, el token es válido, no hacemos nada
+        console.log('AuthLayout.vue','Token is valid');
     })
     .catch(error => {
         // Si hay un error (por ejemplo, token inválido), eliminamos el token y redirigimos al login
         localStorage.removeItem('token');
-        router.visit('/login');
+        router.visit('/');
     });
 };
 

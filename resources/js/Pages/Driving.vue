@@ -16,7 +16,14 @@
                     </div>
                 </div>
                 <div class="bg-gray-50 px-4 py-3 text-right sm:px-6">
-
+                    <button v-if="trip.is_started"
+                        @click="handleCompleteTrip"
+                        class="inline-flex justify-center rounded-md border border-transparent bg-black py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none">
+                        Complete Trip</button>
+                    <button v-else
+                        @click="handlePassengerPickedUp"
+                        class="inline-flex justify-center rounded-md border border-transparent bg-black py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none">
+                        Passenger Picked Up</button>
                 </div>
             </div>
 
@@ -25,12 +32,17 @@
 </template>
 <script setup>
 
+import http from '@/helpers/http';
 import { useLocationStore } from '@/stores/location';
+import { useTripStore } from '@/stores/trip';
 
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 const location = useLocationStore();
+const trip = useTripStore();
+
 const gMap = ref(null);
+const intervalRef = ref(null);
 
 const title = ref('Waiting for ride request...');
 
@@ -61,18 +73,42 @@ const updateMapBounds = (mapObject) => {
         mapObject.fitBounds(LatLngBounds);
 }
 
+const broadcastDriverLocation = () => {
+    http().post(`/api/trip/${trip.id}/location`,{
+        driver_location: location.current.geometry
+    })
+    .then((response) => {
+        console.log('Location broadcasted successfully', response);
+    })
+    .catch((error) => {
+        console.error('Error broadcasting location:', error);
+    });
+}
+
 onMounted(() => {
     gMap.value.$mapPromise.then((mapObject) => {
         updateMapBounds(mapObject);
 
-        setInterval( async () => {
+        intervalRef.value = setInterval( async () => {
             //update the driver's current position and update map bounds
             await location.updateCurrentLocation();
 
+            //update the driver's position in the database
+            broadcastDriverLocation();
+
             updateMapBounds(mapObject);
         }, 5000);
+
     });
-})
+});
+
+onUnmounted(() => {
+
+    clearInterval(intervalRef.value);
+
+    intervalRef.value = null;
+
+});
 
 
 </script>

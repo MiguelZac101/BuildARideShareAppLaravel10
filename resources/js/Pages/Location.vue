@@ -11,7 +11,7 @@ import { useLocationStore } from '@/stores/location';
 const location = useLocationStore();
 
 const HandleLocationChanged = (place) => {
-    console.log('handelLocationchanged', place)
+    console.log('HandleLocationChanged', place)
     location.$patch({
         destination: {
             name: place.name,

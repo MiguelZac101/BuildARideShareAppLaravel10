@@ -18,10 +18,14 @@
                 <div class="flex justify-between bg-gray-50 px-4 py-3 text-right sm:px-6">
                     <button
                         @click="handleDeclineTrip"
-                        class="inline-flex justify-center rounded-md border border-transparent bg-black py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none">Decline</button>
+                        class="inline-flex justify-center rounded-md border border-transparent bg-black py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none">
+                        Decline
+                    </button>
                     <button
                         @click="handleAcceptTrip"
-                        class="inline-flex justify-center rounded-md border border-transparent bg-black py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none">Accept</button>
+                        class="inline-flex justify-center rounded-md border border-transparent bg-black py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none">
+                        Accept
+                    </button>
                 </div>
             </div>
         </div>
@@ -29,7 +33,6 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-import Loader from '@/components/Loader.vue'
 import { onMounted } from 'vue'
 import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
@@ -38,6 +41,7 @@ import { useLocationStore } from '@/stores/location'
 import http from '@/helpers/http'
 
 import { router } from '@inertiajs/vue3'
+import Loader from '@/Components/Loader.vue'
 
 
 const title = ref('Waiting for ride request...')
@@ -50,7 +54,9 @@ const handleDeclineTrip = () => {
     title.value = 'Waiting for ride request...'
 }
 
-const handleAcceptTrip = async () => {
+const handleAcceptTrip = () => {
+
+        console.log('Accepting trip with ID:', trip.id);
 
         http().post(`/api/trip/${trip.id}/accept`,{
             driver_location: location.current.geometry
@@ -63,13 +69,15 @@ const handleAcceptTrip = async () => {
                 }
             })
 
+            console.log('Trip accepted successfully', response);
+            console.log('user.id', response.data.user.id);
+
             router.visit('/driving')
 
         })
         .catch((error) => {
             console.error('Error accepting trip:', error);
         });
-
 
 }
 

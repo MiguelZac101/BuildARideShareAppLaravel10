@@ -62,6 +62,17 @@ const handleVerification = () => {
         <Head title="Log in" />
 
         <form v-if="!waitingOnVerification" @submit.prevent="handleLogin">
+            <div class="mb-6">
+                <ul class="list-disc list-inside text-sm text-gray-600">
+                    <li>
+                        Ingrese su número de celular para recibir un código de verificación por SMS.
+                    </li>
+                    <li>
+                        Genera un código de 6 digitos, lo almacena en "login_code" y notifica al número ingresado.
+                    </li>
+                </ul>
+            </div>
+
             <div>
                 <InputLabel for="phone" value="Phone" />
 
@@ -86,6 +97,16 @@ const handleVerification = () => {
         </form>
 
         <form v-else @submit.prevent="handleVerification">
+            <div class="mb-6">
+                <ul class="list-disc list-inside text-sm text-gray-600">
+                    <li>
+                        Ingrese el código de verificación (login_code) que recibió por SMS.
+                    </li>
+                    <li>
+                        Se generara un token para acceder a la aplicación.
+                    </li>
+                </ul>
+            </div>
             <div>
                 <InputLabel for="login_code" value="login_code" />
 
