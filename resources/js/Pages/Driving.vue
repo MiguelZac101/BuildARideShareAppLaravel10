@@ -2,7 +2,7 @@
     <div class="pt-16">
         <h1 class="text-3xl font-semibold mb-4 text-center">{{ title }}</h1>
         <div>
-            <div class="overflow-hidden shadow sm:rounded-md max-w-sm mx-auto text-left" >
+            <div v-if="!trip.is_complete" class="overflow-hidden shadow sm:rounded-md max-w-sm mx-auto text-left" >
                 <div class="bg-white px-4 py-5 sm:p-6">
                     <div>
                         <GMapMap :zoom="14" :center="location.current.geometry" ref="gMap"
@@ -27,6 +27,12 @@
                 </div>
             </div>
 
+            <div v-else class="overflow-hidden shadow sm:rounded-md max-w-sm mx-auto text-left" >
+                <div class="bg-white px-4 py-5 sm:p-6">
+                    <Tada />
+                </div>
+            </div>
+
         </div>
     </div>
 </template>
@@ -37,6 +43,8 @@ import { useLocationStore } from '@/stores/location';
 import { useTripStore } from '@/stores/trip';
 
 import { onMounted, onUnmounted, ref } from 'vue'
+
+import { router } from '@inertiajs/vue3'
 
 const location = useLocationStore();
 const trip = useTripStore();
@@ -85,6 +93,42 @@ const broadcastDriverLocation = () => {
     });
 }
 
+const handlePassengerPickedUp = () => {
+    http().post(`/api/trip/${trip.id}/start`)
+    .then((response) => {
+        trip.$patch(response.data);
+        title.value = 'traveling to destination...';
+        location.$patch({
+            destination: {
+                name : response.data.destination_name,
+                geometry: response.data.destination
+            }
+        })
+        trip.$patch(response.data);
+    })
+    .catch((error) => {
+        console.error('Error starting trip:', error);
+    });
+}
+
+const handleCompleteTrip = () => {
+    http().post(`/api/trip/${trip.id}/end`)
+    .then((response) => {
+        title.value = 'trip completed!';
+        trip.$patch(response.data);
+
+        setTimeout(() => {
+            trip.$reset();
+            location.$reset();
+            router.visit('/standby');
+        }, 3000);
+
+    })
+    .catch((error) => {
+        console.error('Error completing trip:', error);
+    });
+}
+
 onMounted(() => {
     gMap.value.$mapPromise.then((mapObject) => {
         updateMapBounds(mapObject);
@@ -97,7 +141,7 @@ onMounted(() => {
             broadcastDriverLocation();
 
             updateMapBounds(mapObject);
-        }, 5000);
+        }, 60000);
 
     });
 });

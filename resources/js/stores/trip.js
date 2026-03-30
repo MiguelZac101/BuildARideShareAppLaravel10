@@ -33,7 +33,7 @@ export const useTripStore = defineStore('trip', () => {
     const is_started = ref(false)
     const is_complete = ref(false)
 
-    const reset = () => {
+    function $reset () {
         id.value = null
         user_id.value = null
 
@@ -59,5 +59,5 @@ export const useTripStore = defineStore('trip', () => {
         is_complete.value = false
     }
 
-    return { id, user_id, origin, destination, driver_location, destination_name, is_started, is_complete, reset }
+    return { id, user_id, origin, destination, driver_location, destination_name, is_started, is_complete, $reset }
 })
